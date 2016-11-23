@@ -4,9 +4,9 @@ Uses FCC fm_eng_dat.dat file to update the stations collection. The station coll
 """
 from pymongo import MongoClient
 import argparse
-from radiostations.antennae import Antennae
+from radiostations.antenna import Antenna
 
-class FMAntennae(Antennae):
+class FMAntenna(Antenna):
            
     def set_fields(self, data):
         self.fields = data.split('|')
@@ -45,13 +45,13 @@ def main(argv=None):
         for eng in eng_file:
             cnt = cnt + 1
             print 'Reading record # ' + str(cnt)
-            fm_antennae = FMAntennae(eng)
+            fm_antenna = FMAntenna(eng)
             
-            if not fm_antennae.is_valid:
+            if not fm_antenna.is_valid:
                 continue
             
-            facility_id = fm_antennae.fac_id
-            location = fm_antennae.get_location()
+            facility_id = fm_antenna.fac_id
+            location = fm_antenna.get_location()
             
             if facility_id == None or location == None:
                 continue

@@ -6,9 +6,9 @@ to look up the information from the station.
 from pymongo import MongoClient
 import argparse
 import sys
-from radiostations.antennae import Antennae
+from radiostations.antenna import Antenna
 
-class AMAntennae(Antennae):
+class AMAntenna(Antenna):
     def set_fields(self, data):
         self.fields = data.split('|')
         
@@ -57,19 +57,19 @@ def main(argv=None):
     with open(args.ant_file, 'r') as ant_file:
         prev_location = {}
         for ant in ant_file:
-            am_antennae = AMAntennae(ant)
+            am_antenna = AMAntenna(ant)
             
-            if not am_antennae.is_valid:
+            if not am_antenna.is_valid:
                 continue
             
-            if not fac_ids.has_key(am_antennae.appl_id):
-                sys.stderr.write('applId ' + am_antennae.appl_id + ' has no entry in fac_ids\n')
+            if not fac_ids.has_key(am_antenna.appl_id):
+                sys.stderr.write('applId ' + am_antenna.appl_id + ' has no entry in fac_ids\n')
                 continue
             
-            if am_antennae.get_lat() == None or am_antennae.get_long() == None:
+            if am_antenna.get_lat() == None or am_antenna.get_long() == None:
                 continue
-            facility_id = fac_ids[am_antennae.appl_id]
-            location = am_antennae.get_location()
+            facility_id = fac_ids[am_antenna.appl_id]
+            location = am_antenna.get_location()
             
             if location == None:
                 continue
