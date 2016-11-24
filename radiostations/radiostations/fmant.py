@@ -42,9 +42,12 @@ def main(argv=None):
     with open(args.eng_file, 'r') as eng_file:
         prev_location={}
         cnt = 0
+        upd = 0
         for eng in eng_file:
             cnt = cnt + 1
-            print 'Reading record # ' + str(cnt)
+            if cnt % 1000 == 0:
+                print 'Reading FM engineering record ' + str(cnt)
+                
             fm_antenna = FMAntenna(eng)
             
             if not fm_antenna.is_valid:
@@ -61,9 +64,12 @@ def main(argv=None):
             
             prev_location = location
             # TODO Update process is very slow, find alternative
-            stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
+            return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
             
-#             print 'facility-id ' + facility_id + ' updated with ' + str(location)
+            if not return_doc == None:
+                upd = upd + 1
+        
+        print str(upd) + ' stations updated'
 
 if __name__ == "__main__":
     main()

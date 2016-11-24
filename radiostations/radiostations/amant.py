@@ -56,7 +56,14 @@ def main(argv=None):
     
     with open(args.ant_file, 'r') as ant_file:
         prev_location = {}
+        cnt = 0
+        upd = 0
         for ant in ant_file:
+            cnt = cnt + 1;
+            
+            if cnt % 1000 == 0:
+                print 'Reading AM antenna record ' + str(cnt)
+                
             am_antenna = AMAntenna(ant)
             
             if not am_antenna.is_valid:
@@ -79,7 +86,12 @@ def main(argv=None):
             
             prev_location = location
             # TODO Update process is very slow, find alternative
-            stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
+            return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
+            
+            if not return_doc == None:
+                upd = upd + 1
+                
+        print str(upd) + ' stations updated'
             
 
 if __name__ == "__main__":
