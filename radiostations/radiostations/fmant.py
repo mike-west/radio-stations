@@ -4,7 +4,7 @@ Uses FCC fm_eng_dat.dat file to update the stations collection. The station coll
 """
 from pymongo import MongoClient
 import argparse
-from radiostations.antenna import Antenna
+from antenna import Antenna
 
 class FMAntenna(Antenna):
            
@@ -27,27 +27,22 @@ class FMAntenna(Antenna):
         return True
     
 def main(argv=None):
-    collection_name = 'stations'
         
-    argparser = argparse.ArgumentParser(description="Update station collection from am_ant_sys and am_eng_data data")
+    argparser = argparse.ArgumentParser(description="Update station collection from fm_eng_data.dat")
     argparser.add_argument('--eng_file', dest='eng_file', default='fm_eng_data.dat')
+    argparser.add_argument('--collection', dest='collection', default='stations', help='name of collection to create, default is stations')
     argparser.add_argument('--db_name', dest='dbname', required=True)
     args = argparser.parse_args() 
     
     # assumes the database server is listening @ localhost:27017
     client = MongoClient()
     db = client[args.dbname]
-    stations = db[collection_name]
+    stations = db[args.collection]
     
     with open(args.eng_file, 'r') as eng_file:
         prev_location={}
-        cnt = 0
         upd = 0
-        for eng in eng_file:
-            cnt = cnt + 1
-            if cnt % 1000 == 0:
-                print 'Reading FM engineering record ' + str(cnt)
-                
+        for eng in eng_file:               
             fm_antenna = FMAntenna(eng)
             
             if not fm_antenna.is_valid:
