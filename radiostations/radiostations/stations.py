@@ -50,18 +50,18 @@ def get_facilities(facility_file):
     
         
 def main(argv=None):
-    collection_name = 'stations'
         
     argparser = argparse.ArgumentParser(description="Create station collection from fcc facility data")
-    argparser.add_argument('--facility_file', dest='facility_file', default='facility.dat')
-    argparser.add_argument('--db_name', dest='dbname', required=True)
+    argparser.add_argument('--facility_file', dest='facility_file', default='facility.dat', help="path to facility file (i.e. facility.dat) defaults to facility.dat in current directory")
+    argparser.add_argument('--collection', dest='collection', default='stations', help='name of collection to create, default is stations. Drops existing collection if it exists')
+    argparser.add_argument('--db_name', dest='dbname', required=True, help='name of mongodb database, required')
     args = argparser.parse_args()
     
     # assumes the database server is listening @ localhost:27017
     client = MongoClient()
     db = client[args.dbname]
-    db.drop_collection(collection_name)
-    stations = db.create_collection(collection_name)
+    db.drop_collection(args.collection)
+    stations = db.create_collection(args.collection)
     
     stations.insert(get_facilities(args.facility_file))
     
