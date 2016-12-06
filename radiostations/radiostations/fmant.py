@@ -1,10 +1,15 @@
 """
 Filters the FCC fm_eng_dat.dat
 Uses FCC fm_eng_dat.dat file to update the stations collection. The station collection must be populated first
+
+Uses unordered_bulk_op() for inserts. My test indicates that the number of records per insert does not change
+the total time required. Therefore I have set the count to update every 10,000 records. 
 """
 from pymongo import MongoClient
+from pymongo.errors import BulkWriteError
 import argparse
 from antenna import Antenna
+import time
 
 class FMAntenna(Antenna):
            
@@ -34,14 +39,17 @@ def main(argv=None):
     argparser.add_argument('--db_name', dest='dbname', required=True)
     args = argparser.parse_args() 
     
-    # assumes the database server is listening @ localhost:27017
+    # assumes the database server is listening @ localhost:27017 
     client = MongoClient()
     db = client[args.dbname]
     stations = db[args.collection]
+    cnt = 0
+    max_inserts = 10000
+    inserts = stations.initialize_unordered_bulk_op()
     
     with open(args.eng_file, 'r') as eng_file:
         prev_location={}
-        upd = 0
+
         for eng in eng_file:               
             fm_antenna = FMAntenna(eng)
             
@@ -58,13 +66,33 @@ def main(argv=None):
                 continue
             
             prev_location = location
-            # TODO Update process is very slow, find alternative
-            return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
             
-            if not return_doc == None:
-                upd = upd + 1
-        
-        print str(upd) + ' stations updated'
+            inserts.find({'facility-id':facility_id}).update({'$push':{'antennas':location}})
+            cnt = cnt + 1
+            if cnt == max_inserts:
+                cnt = 0
+                try:
+                    print 'starting updates...'
+                    start = time.time()
+                    inserts.execute()
+                    end = time.time()
+                    print "Time to update " + str(max_inserts) + " records " + str(end - start) + " secs"
+                    inserts = stations.initialize_unordered_bulk_op()
+                except BulkWriteError as bwe:
+                    print bwe.details 
+                     
+             
+
+        try:
+            print 'starting updates...'
+            start = time.time()
+            inserts.execute()
+            end = time.time()
+            print "Time to update " + str(cnt) + " records " + str(end - start) + " secs"
+        except BulkWriteError as bwe:
+            print bwe.details 
+#         print str(upd) + ' stations updated'
 
 if __name__ == "__main__":
     main()
+    

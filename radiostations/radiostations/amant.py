@@ -4,9 +4,11 @@ Gets facility id and computes the latitude and longitude from the am_ant_sys fil
 to look up the information from the station. 
 """
 from pymongo import MongoClient
+from pymongo.errors import BulkWriteError
 import argparse
+from antenna import Antenna
+import time
 import sys
-from radiostations.antenna import Antenna
 
 class AMAntenna(Antenna):
     def set_fields(self, data):
@@ -57,12 +59,11 @@ def main(argv=None):
     with open(args.ant_file, 'r') as ant_file:
         prev_location = {}
         cnt = 0
-        upd = 0
+        max_inserts = 10000
+        
+        inserts = stations.initialize_unordered_bulk_op()
+        
         for ant in ant_file:
-            cnt = cnt + 1;
-            
-            if cnt % 1000 == 0:
-                print 'Reading AM antenna record ' + str(cnt)
                 
             am_antenna = AMAntenna(ant)
             
@@ -70,12 +71,12 @@ def main(argv=None):
                 continue
             
             if not fac_ids.has_key(am_antenna.appl_id):
-                sys.stderr.write('applId ' + am_antenna.appl_id + ' has no entry in fac_ids\n')
                 continue
             
             if am_antenna.get_lat() == None or am_antenna.get_long() == None:
                 continue
             facility_id = fac_ids[am_antenna.appl_id]
+            
             location = am_antenna.get_location()
             
             if location == None:
@@ -85,13 +86,35 @@ def main(argv=None):
                 continue
             
             prev_location = location
-            # TODO Update process is very slow, find alternative
-            return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
             
-            if not return_doc == None:
-                upd = upd + 1
-                
-        print str(upd) + ' stations updated'
+            # TODO Update process is very slow, find alternative
+            inserts.find({'facility-id':facility_id}).update({'$push':{'antennas':location}})
+            cnt = cnt + 1
+            if cnt == max_inserts:
+                cnt = 0
+                try:
+                    print 'starting updates...'
+                    start = time.time()
+                    inserts.execute()
+                    end = time.time()
+                    print "Time to update " + str(max_inserts) + " records " + str(end - start) + " secs"
+                    inserts = stations.initialize_unordered_bulk_op()
+                except BulkWriteError as bwe:
+                    print bwe.details 
+#             return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
+#             
+#             if not return_doc == None:
+#                 upd = upd + 1
+#                 
+#         print str(upd) + ' stations updated'
+        try:
+            print 'starting updates...'
+            start = time.time()
+            inserts.execute()
+            end = time.time()
+            print "Time to update " + str(cnt) + " records " + str(end - start) + " secs"
+        except BulkWriteError as bwe:
+            print bwe.details 
             
 
 if __name__ == "__main__":
