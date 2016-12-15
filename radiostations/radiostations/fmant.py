@@ -80,6 +80,7 @@ def main(argv=None):
                     inserts = stations.initialize_unordered_bulk_op()
                 except BulkWriteError as bwe:
                     print bwe.details 
+                    inserts = stations.initialize_unordered_bulk_op()
                      
              
 
