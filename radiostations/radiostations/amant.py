@@ -101,12 +101,7 @@ def main(argv=None):
                     inserts = stations.initialize_unordered_bulk_op()
                 except BulkWriteError as bwe:
                     print bwe.details 
-#             return_doc = stations.find_one_and_update({'facility-id':facility_id}, {'$push':{'antennas':location}})
-#             
-#             if not return_doc == None:
-#                 upd = upd + 1
-#                 
-#         print str(upd) + ' stations updated'
+
         try:
             print 'starting updates...'
             start = time.time()
