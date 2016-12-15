@@ -1,6 +1,4 @@
-
-
-radio-stations
+#radio-stations
 ===============
 
 
@@ -33,7 +31,7 @@ The project assumes that Mongodb is connected to localhost:27017 and requires no
    
  - run the stations.py program against the facility.dat file. Note that this will drop the exisiting collection in the database.
 
->      python stations.py --help
+>     \>python stations.py --help
 >     usage: stations.py [-h] [--facility_file FACILITY_FILE]
 >                        [--collection COLLECTION] --db_name DBNAME
 >     
@@ -57,27 +55,25 @@ The next two programs require the stations collection to exist and can be run in
  - Run fmant.py against the fm_eng_data.dat file.
  
 
->\>python fmant.py --help 
-> usage: fmant.py [-h] [--eng_file ENG_FILE] [--collection COLLECTION] --db_name
->                 DBNAME
+>     \>python fmant.py --help 
+>     usage: fmant.py [-h] [--eng_file ENG_FILE] [--collection COLLECTION] --db_name DBNAME
 > 
-> Update station collection from am_ant_sys and am_eng_data data
+>     Update station collection from am_ant_sys and am_eng_data data
 > 
-> arguments:   -h, --help            show this help message and exit  
-> --eng_file ENG_FILE   --collection COLLECTION
+>     arguments:   -h, --help            show this help message and exit  
+>     --eng_file ENG_FILE   --collection COLLECTION
 >                         name of collection to create, default is stations   --db_name DBNAME
 > 
 
 - Run amant.py against the am_ant_sys.dat and am_eng_data.dat files
 
-> \>python amant.py --help 
-> usage: amant.py [-h] [--ant_file ANT_FILE] [--eng_file ENG_FILE] --db_name
->                 DBNAME
+>     \>python amant.py --help 
+>     usage: amant.py [-h] [--ant_file ANT_FILE] [--eng_file ENG_FILE] --db_name DBNAME
 > 
-> Update station collection from am_ant_sys and am_eng_data data
+>     Update station collection from am_ant_sys and am_eng_data data
 > 
-> optional arguments:   -h, --help           show this help message and
-> exit   --ant_file ANT_FILE   --eng_file ENG_FILE   --db_name DBNAME
+>      optional arguments:   -h, --help           show this help message and exit   
+>      --ant_file ANT_FILE   --eng_file ENG_FILE   --db_name DBNAME
 > 
  
 >Written with [StackEdit](https://stackedit.io/).
