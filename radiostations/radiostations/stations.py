@@ -51,16 +51,26 @@ class Facility(object):
 def get_facilities(facility_file):       
     checkCallSign = re.compile(r"([K,W][A-Z]{2,3})(-AM/FM|-AM|-FM)?")
     checkCallSignSvc = re.compile(r"(AM|FM)$")
+    
     with open(facility_file, 'r') as fac:
         
         for fac_data in fac:
+            
             facility = Facility(fac_data)
             
-            if not checkCallSign.match(facility.callsign):
+            call_sign_match = checkCallSign.match(facility.callsign)
+            if not call_sign_match:
                 continue;
-        
-            if not checkCallSignSvc.match(facility.service):
-                continue
+            call_sign = call_sign_match.group(1)
+            
+            call_service = None
+            if call_sign_match.group(2):
+                call_service = call_sign_match.group(2)[1:]
+            else:
+                if not checkCallSignSvc.match(facility.service):
+                    continue
+                else:
+                    call_service = facility.service
             
             yield facility.to_dict()
     
