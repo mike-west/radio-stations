@@ -7,6 +7,8 @@ import string
 import re
 import argparse
 import ast
+import aka_call_sign
+from radiostations.aka_call_sign import get_aka_sign
 
 class Facility(object):
     def __init__(self, data):
@@ -32,15 +34,9 @@ class Facility(object):
         '''
         Create the display sign. Some stations use a different call sign than the official one, just a few.
         '''
-        call_sign = self.callsign
-        
-        if (call_sign == 'WBRK'):
-            call_sign = 'WFAN'
+        call_sign = get_aka_sign(self.callsign)
             
-        if (call_sign == 'KZZQ'):
-            call_sign = 'KZNS'
-            
-        return call_sign + ' ' + '{:g}'.format(float(self.frequency)) + ' ' + self.service
+        return call_sign + ' ' + '{:g}'.format(float(self.frequency))
         
     def to_insert_string(self):
         return self.insert_template.substitute(fac=self.facility, csign=self.callsign, dsign=self.to_display_sign(), freq=float(self.frequency),
@@ -49,7 +45,7 @@ class Facility(object):
         return ast.literal_eval(self.to_insert_string())
     
 def get_facilities(facility_file):       
-    checkCallSign = re.compile(r"([K,W][A-Z]{2,3})(-AM/FM|-AM|-FM)?")
+    checkCallSign = re.compile(r"(?:[K,W][A-Z]{2,3})(?:-AM/FM|-AM|-FM)?")
     checkCallSignSvc = re.compile(r"(AM|FM)$")
     
     with open(facility_file, 'r') as fac:
@@ -61,16 +57,9 @@ def get_facilities(facility_file):
             call_sign_match = checkCallSign.match(facility.callsign)
             if not call_sign_match:
                 continue;
-            call_sign = call_sign_match.group(1)
             
-            call_service = None
-            if call_sign_match.group(2):
-                call_service = call_sign_match.group(2)[1:]
-            else:
-                if not checkCallSignSvc.match(facility.service):
-                    continue
-                else:
-                    call_service = facility.service
+            if not checkCallSignSvc.match(facility.service):
+                continue
             
             yield facility.to_dict()
     
