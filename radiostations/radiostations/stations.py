@@ -22,7 +22,8 @@ class Facility(object):
         self.service=self.fields[10]
         self.facility=self.fields[14]
         self.insert_template = string.Template('{"facility-id": "$fac", ' + \
-                           '"call-sign": "$csign", ' + \
+                           '"fcc-call-sign": "$csign", ' + \
+                           '"aka-call-sign": "$asign", ' + \
                            '"display-sign":"$dsign",' + \
                            '"freq": $freq, ' + \
                            '"amfm": "$amfm", ' + \
@@ -39,7 +40,7 @@ class Facility(object):
         return call_sign + ' ' + '{:g}'.format(float(self.frequency))
         
     def to_insert_string(self):
-        return self.insert_template.substitute(fac=self.facility, csign=self.callsign, dsign=self.to_display_sign(), freq=float(self.frequency),
+        return self.insert_template.substitute(fac=self.facility, csign=self.callsign, asign=get_aka_sign(self.callsign), dsign=self.to_display_sign(), freq=float(self.frequency),
                                                amfm=self.service, city=self.city, st=self.state)
     def to_dict(self):
         return ast.literal_eval(self.to_insert_string())
