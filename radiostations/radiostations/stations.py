@@ -36,11 +36,21 @@ class Facility(object):
         Create the display sign. Some stations use a different call sign than the official one, just a few.
         '''
         call_sign = get_aka_sign(self.callsign)
+        
+        if self.service == "FM":
+            call_sign = call_sign + "-FM"
             
         return call_sign + ' ' + '{:g}'.format(float(self.frequency))
+    
+    def to_aka_sign(self):
+        call_sign = get_aka_sign(self.callsign)
+        if self.service == "FM":
+            call_sign = call_sign + "-FM"
+            
+        return call_sign
         
     def to_insert_string(self):
-        return self.insert_template.substitute(fac=self.facility, csign=self.callsign, asign=get_aka_sign(self.callsign), dsign=self.to_display_sign(), freq=float(self.frequency),
+        return self.insert_template.substitute(fac=self.facility, csign=self.callsign, asign=self.to_aka_sign(), dsign=self.to_display_sign(), freq=float(self.frequency),
                                                amfm=self.service, city=self.city, st=self.state)
     def to_dict(self):
         return ast.literal_eval(self.to_insert_string())
