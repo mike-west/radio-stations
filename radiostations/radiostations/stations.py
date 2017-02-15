@@ -90,7 +90,8 @@ def main(argv=None):
     stations = db.create_collection(args.collection)
     
     stations.insert(get_facilities(args.facility_file))
-    stations.create_index("call-sign")
+    stations.create_index("fcc-call-sign")
+    stations.create_index("aka-call-sign")
     stations.create_index("facility-id")
     
     print str(stations.count()) + " stations inserted"
