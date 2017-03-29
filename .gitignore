@@ -1,2 +1,4 @@
 .metadata/
 .pyc
+radio_only.*
+*.dat

@@ -44,6 +44,7 @@ class Facility(object):
     
     def to_aka_sign(self):
         call_sign = get_aka_sign(self.callsign)
+
         if self.service == "FM" and call_sign[-3:] != "-FM":
             call_sign = call_sign + "-FM"
             
