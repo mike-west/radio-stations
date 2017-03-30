@@ -7,13 +7,12 @@ import string
 import re
 import argparse
 import ast
-import aka_call_sign
 from radiostations.aka_call_sign import get_aka_sign
 
 class Facility(object):
     def __init__(self, data):
         self.fields = data.split('|')
-        self.city=self.fields[0]
+        self.city=str.title(self.fields[0])
         self.state=self.fields[1]
         self.callsign=self.fields[5]
         self.displaysign=self.callsign
