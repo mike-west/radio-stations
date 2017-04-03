@@ -19,6 +19,7 @@ class Facility(object):
         self.channel=self.fields[6]
         self.frequency=self.fields[9]
         self.service=self.fields[10]
+        self.facility_type = self.fields[13]
         self.facility=self.fields[14]
         self.insert_template = string.Template('{"facility-id": "$fac", ' + \
                            '"fcc-call-sign": "$csign", ' + \
@@ -38,7 +39,7 @@ class Facility(object):
         
         if self.service == "FM" and call_sign[-3:] != "-FM":
             call_sign = call_sign + "-FM"
-            
+         
         return call_sign + ' ' + '{:g}'.format(float(self.frequency))
     
     def to_aka_sign(self):
@@ -58,6 +59,7 @@ class Facility(object):
 def get_facilities(facility_file):       
     checkCallSign = re.compile(r"(?:[K,W][A-Z]{2,3})(?:-AM/FM|-AM|-FM)?")
     checkCallSignSvc = re.compile(r"(AM|FM)$")
+    checkFacType = re.compile(r"(AM|FT|FTB|H)")
     
     with open(facility_file, 'r') as fac:
         
@@ -65,6 +67,17 @@ def get_facilities(facility_file):
             
             facility = Facility(fac_data)
             
+            # ignore stations with incomplete info
+            if not facility.frequency.strip() or not facility.callsign.strip():
+                continue
+            
+            if not facility.facility_type == None:
+                fac_type_match = checkFacType.match(facility.facility_type) 
+                if fac_type_match:
+                    yield facility.to_dict()
+                    continue
+            
+            # if facility type is None, we should have a basic AM station.
             call_sign_match = checkCallSign.match(facility.callsign)
             if not call_sign_match:
                 continue;
