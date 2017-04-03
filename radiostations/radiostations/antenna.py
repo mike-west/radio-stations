@@ -28,10 +28,10 @@ class Antenna(object):
         return self.lat + (self.lat_mn / 60) + (self.lat_sc / 3600)
     
     def get_long(self):    
-        if not self.is_valid or self.lon == 0:
+        if not self.is_valid or self.lon == 0 or not self.lon_dir == "W":
             return None
         
-        return self.lon + (self.lon_mn / 60) + (self.lon_sc / 3600)
+        return (self.lon + (self.lon_mn / 60) + (self.lon_sc / 3600)) * - 1 
     
     def get_location(self):
         lat = self.get_lat()
