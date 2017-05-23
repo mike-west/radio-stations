@@ -12,6 +12,7 @@ aka_call_signs = {
     'WBRK': 'WFAN'
     , 'KZZQ': 'KZNS'
     , 'W237CW-FX': 'WDAE-FM'
+    , 'KSPN': 'ESPNLA'
     }
 
 def get_aka_sign(call_sign):
