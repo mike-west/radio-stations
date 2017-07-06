@@ -25,6 +25,7 @@ aka_call_signs = {
     , 'W287CP': 'WYTS-FM'
     , 'WBIZ': 'The Brew'
     , 'WBIZ-FM': 'Z-100'
+    , 'KKUU-FM': 'ESPN FM'
     }
 
 def get_aka_sign(call_sign):

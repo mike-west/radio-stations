@@ -103,9 +103,26 @@ def main(argv=None):
     stations = db.create_collection(args.collection)
     
     stations.insert(get_facilities(args.facility_file))
+    stations.create_index("facility-id")
+    
+    # remove dups based on facility-id
+    cursor = stations.aggregate([
+        { '$group': {
+            '_id': {'facility-id': '$facility-id'}, 'uniqueIds': {'$addToSet':"$facility-id"}, 'count':{'$sum': 1} } },
+            {'$match': { 'count': {'$gt': 1} }}
+    ])
+    
+    response = []
+    for doc in cursor:
+        del doc['facility_id'][0]
+        for id in doc['facility_id']:
+            response.append(id)
+        
+    if len(response) > 0:    
+        stations.remove({'facility-id':{'$in': 'response'}})
+    
     stations.create_index("fcc-call-sign")
     stations.create_index("aka-call-sign")
-    stations.create_index("facility-id")
     
     print str(stations.count()) + " stations inserted"
 
