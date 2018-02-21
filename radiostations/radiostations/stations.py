@@ -7,7 +7,7 @@ import string
 import re
 import argparse
 import ast
-from radiostations.aka_call_sign import get_aka_sign
+from aka_call_sign import get_aka_sign
 
 class Facility(object):
     def __init__(self, data):
