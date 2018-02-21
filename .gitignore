@@ -1,4 +1,2 @@
-.metadata/
-.pyc
-radio_only.*
-*.dat
+**/*.log
+**/*.pyc
