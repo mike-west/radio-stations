@@ -8,7 +8,7 @@ Python 2.7+ is required to run the code.
 
 **The FCC database**
 
-The Federal Communications Commision uses a MySQL database to store all civilian broadcast station data (commercial, amature, CB, TV, experimental, low-power etc.). The database is backed up to pipe-delimited files and can be found as zip files at ftp://ftp.fcc.gov/pub/Bureaus/MB/Databases/cdbs. The information I use comes from
+The Federal Communications Commision uses a MySQL database to store all civilian broadcast station data (commercial, amature, CB, TV, experimental, low-power etc.). The database is backed up to pipe-delimited files and can be found as zip files at https://www.fcc.gov/media/radio/cdbs-database-public-files. The information I use comes from
 
  - am_ant_sys.zip
  - am_eng_data.zip
