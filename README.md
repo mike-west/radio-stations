@@ -8,7 +8,7 @@ Python 2.7+ is required to run the code.
 
 **The FCC database**
 
-The Federal Communications Commision uses a MySQL database to store all civilian broadcast station data (commercial, amature, CB, TV, experimental, low-power etc.). The database is backed up to pipe-delimited files and can be found as zip files at https://www.fcc.gov/media/radio/cdbs-database-public-files. The information I use comes from
+The Federal Communications Commission uses a MySQL database to store all civilian broadcast station data (commercial, amateur, CB, TV, experimental, low-power etc.). The database is backed up to pipe-delimited files and can be found as zip files at https://www.fcc.gov/media/radio/cdbs-database-public-files. The information I use comes from
 
  - am_ant_sys.zip
  - am_eng_data.zip
@@ -20,6 +20,8 @@ The Federal Communications Commision uses a MySQL database to store all civilian
  - pymongo
  - abc
  - argparse
+ - ast
+ - re
 
 **Mongodb**
 The project assumes that Mongodb is connected to localhost:27017 and requires no credentials to update. If your installation is different, and you don't want to change the code yourself, add a comment and I'll see if I can up the priority on this.
@@ -29,7 +31,7 @@ The project assumes that Mongodb is connected to localhost:27017 and requires no
  - First make sure that a Mongodb server is running and connected to
    port 27017.
    
- - run the stations.py program against the facility.dat file. Note that this will drop the exisiting collection in the database.
+ - run the stations.py program against the facility.dat file. Note that this will drop the existing collection in the database.
 
 >     \>python stations.py --help
 >     usage: stations.py [-h] [--facility_file FACILITY_FILE]
