@@ -1,2 +1,6 @@
 **/*.log
 **/*.pyc
+/aka_call_sign.py
+.project
+.pydevproject
+.vscode/
