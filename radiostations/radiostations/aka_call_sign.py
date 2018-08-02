@@ -721,7 +721,7 @@ aka_call_signs = {
     ,  "WXOS" : "101 SPORTS"
     ,  "KXFN" : "1380 The Fan 2"
     ,  "KTKS" : "Lake Radio"
-    ,  "KHOM" : "ESPN KHOM "The Homer""
+    ,  "KHOM" : "ESPN KHOM 'The Homer'"
     ,  "WSMS" : "99.9 The Fox"
     ,  "WXBD" : "ESPN Sports Radio 1490"
     ,  "WTNI" : "1640 The Champ"
