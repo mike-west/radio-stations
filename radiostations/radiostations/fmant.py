@@ -76,7 +76,7 @@ def main(argv=None):
                     start = time.time()
                     inserts.execute()
                     end = time.time()
-                    print "Time to update " + str(max_inserts) + " records " + str(end - start) + " secs"
+                    print "Time to bulk update " + str(max_inserts) + " records " + str(end - start) + " secs"
                     inserts = stations.initialize_unordered_bulk_op()
                 except BulkWriteError as bwe:
                     print bwe.details 
@@ -89,10 +89,12 @@ def main(argv=None):
             start = time.time()
             inserts.execute()
             end = time.time()
-            print "Time to update " + str(cnt) + " records " + str(end - start) + " secs"
+            print "Time to bulk update " + str(cnt) + " records " + str(end - start) + " secs"
         except BulkWriteError as bwe:
             print bwe.details 
-#         print str(upd) + ' stations updated'
+        print str(upd) + ' stations updated'
+        
+    print "Completed"
 
 if __name__ == "__main__":
     main()
