@@ -17,6 +17,7 @@ class Facility(object):
         self.callsign=self.fields[5]
         self.displaysign=self.callsign
         self.channel=self.fields[6]
+        self.country=self.fields[8]
         self.frequency=self.fields[9]
         self.service=self.fields[10]
         self.facility_type = self.fields[13]
@@ -28,7 +29,7 @@ class Facility(object):
                            '"freq": $freq, ' + \
                            '"amfm": "$amfm", ' + \
                            '"antennas": [], ' + \
-                           '"address": {"city": "$city", "state": "$st"}, ' + \
+                           '"address": {"city": "$city", "state": "$st", "country": "$ctr"}, ' + \
                            '}')
         
     def to_display_sign(self):
@@ -52,14 +53,15 @@ class Facility(object):
         
     def to_insert_string(self):
         return self.insert_template.substitute(fac=self.facility, csign=self.callsign, asign=self.to_aka_sign(), dsign=self.to_display_sign(), freq=float(self.frequency),
-                                               amfm=self.service, city=self.city, st=self.state)
+                                               amfm=self.service, city=self.city, st=self.state, ctr=self.country)
     def to_dict(self):
         return ast.literal_eval(self.to_insert_string())
     
 def get_facilities(facility_file):       
-    checkCallSign = re.compile(r"(?:[K,W][A-Z]{2,3})(?:-AM/FM|-AM|-FM)?")
+    checkCallSign = re.compile(r"(?:[C,K,W][A-Z]{2,3})(?:-AM/FM|-AM|-FM)?")
+    checkTranslator_Repeater = re.compile(r"(?:[K,W][0-9]{3}[A-Z]{2})?")
     checkCallSignSvc = re.compile(r"(AM|FM)$")
-    checkFacType = re.compile(r"(AM|FT|FTB|H)")
+#     checkFacType = re.compile(r"(AM|FT|FTB|H)")
     
     with open(facility_file, 'r') as fac:
         
@@ -71,16 +73,14 @@ def get_facilities(facility_file):
             if not facility.frequency.strip() or not facility.callsign.strip():
                 continue
             
-            if not facility.facility_type == None:
-                fac_type_match = checkFacType.match(facility.facility_type) 
-                if fac_type_match:
-                    yield facility.to_dict()
-                    continue
+            if facility.facility_type == None:
+                continue
             
             # if facility type is None, we should have a basic AM station.
             call_sign_match = checkCallSign.match(facility.callsign)
             if not call_sign_match:
-                continue;
+                #TODO check for repeater stations
+                continue
             
             if not checkCallSignSvc.match(facility.service):
                 continue
