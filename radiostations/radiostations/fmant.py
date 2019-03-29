@@ -5,6 +5,7 @@ Uses FCC fm_eng_dat.dat file to update the stations collection. The station coll
 Uses unordered_bulk_op() for inserts. My test indicates that the number of records per insert does not change
 the total time required. Therefore I have set the count to update every 10,000 records. 
 """
+import pymongo
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
 import argparse
@@ -37,6 +38,7 @@ def main(argv=None):
     argparser.add_argument('--eng_file', dest='eng_file', default='fm_eng_data.dat')
     argparser.add_argument('--collection', dest='collection', default='stations', help='name of collection to create, default is stations')
     argparser.add_argument('--db_name', dest='dbname', required=True)
+#     argparser.add_argument('--index_ant', action='store_true', dest='index_ant', default=False)
     args = argparser.parse_args() 
     
     # assumes the database server is listening @ localhost:27017 
@@ -44,6 +46,7 @@ def main(argv=None):
     db = client[args.dbname]
     stations = db[args.collection]
     cnt = 0
+    upd= 0
     max_inserts = 10000
     inserts = stations.initialize_unordered_bulk_op()
     
@@ -69,6 +72,7 @@ def main(argv=None):
             
             inserts.find({'facility-id':facility_id}).update({'$push':{'antennas':location}})
             cnt = cnt + 1
+            upd = upd + 1
             if cnt == max_inserts:
                 cnt = 0
                 try:
@@ -83,7 +87,8 @@ def main(argv=None):
                     inserts = stations.initialize_unordered_bulk_op()
                      
              
-
+        # end of eng_file update remaining radio stations.
+        upd = upd + cnt
         try:
             print 'starting updates...'
             start = time.time()
@@ -92,6 +97,8 @@ def main(argv=None):
             print "Time to bulk update " + str(cnt) + " records " + str(end - start) + " secs"
         except BulkWriteError as bwe:
             print bwe.details 
+            
+        stations.create_index([("ant", pymongo.GEOSPHERE)])
         print str(upd) + ' stations updated'
         
     print "Completed"

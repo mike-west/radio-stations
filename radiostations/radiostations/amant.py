@@ -37,6 +37,7 @@ def main(argv=None):
     argparser.add_argument('--ant_file', dest='ant_file', default='am_ant_sys.dat')
     argparser.add_argument('--eng_file', dest='eng_file', default='am_eng_data.dat')
     argparser.add_argument('--db_name', dest='dbname', required=True)
+    argparser.add_argument('--index_ant', action='store_true', dest='index_ant', default=False)
     args = argparser.parse_args()
    
     # create a hash table where the key is the application id and the value is the facility id 
@@ -111,7 +112,9 @@ def main(argv=None):
             print "Time to bulk update " + str(cnt) + " records " + str(end - start) + " secs"
         except BulkWriteError as bwe:
             print bwe.details 
-            
+    
+    if (args.index_ant == True):
+        stations.create_index({"ant": "2dsphere"})        
     print "Completed"
             
 

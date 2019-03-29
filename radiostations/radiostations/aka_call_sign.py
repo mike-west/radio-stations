@@ -9,7 +9,10 @@ often a station is an AM or FM repeater or translator for a parent station or it
 '''
 
 aka_call_signs = {
-    'WBRK': 'WFAN'
+      'CKST': 'Team 1410'
+    , 'CFAC': 'Sportsnet 960 The FAN'
+    , 'CJCL': 'Sportsnet 590 The FAN'
+    , 'WBRK': 'WFAN'
     , 'KZZQ': 'KZNS'
     , 'W237CW-FX': 'WDAE-FM'
     , 'KSPN': 'ESPNLA'
@@ -25,6 +28,10 @@ aka_call_signs = {
     , 'W287CP': 'WYTS-FM'
     , 'WBIZ': 'The Brew'
     , 'WBIZ-FM': 'Z-100'
+    , "WGOW" : "News Radio"
+    , "WGOW-FM" : "The Talk Monster"
+    , "WFNI"    : "The Fan"
+    , "W299BB"  : "WFNI-FM Indy's Sport Center"
     , 'KKUU-FM': 'ESPN FM'
     ,  "KTZN" : "550 The Zone"
     ,  "KCBF" : "KCBF 820 Sports"
@@ -552,6 +559,7 @@ aka_call_signs = {
     ,  "WJZ" : "105.7 The Fan"
     ,  "WJZ" : "ESPN Radio 1300"
     ,  "WBAL" : "WBAL-AM"
+    ,  "W268BA" : "WBAL-FM"
     ,  "WNST" : "WNST-AM"
     ,  "WWMX" : "Mix 106.5"
     ,  "WSPZ" : "Sports Talk 570"
