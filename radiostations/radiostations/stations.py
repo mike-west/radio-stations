@@ -41,7 +41,7 @@ class Facility(object):
         if self.service == "FM" and call_sign[-3:] != "-FM":
             call_sign = call_sign + "-FM"
          
-        return call_sign + ' ' + '{:g}'.format(float(self.frequency))
+        return call_sign
     
     def to_aka_sign(self):
         call_sign = get_aka_sign(self.callsign)
