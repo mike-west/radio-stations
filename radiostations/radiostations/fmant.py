@@ -46,7 +46,7 @@ def main(argv=None):
     db = client[args.dbname]
     stations = db[args.collection]
     cnt = 0
-    upd= 0
+    upd = 0
     max_inserts = 10000
     inserts = stations.initialize_unordered_bulk_op()
     
@@ -74,6 +74,7 @@ def main(argv=None):
             cnt = cnt + 1
             upd = upd + 1
             if cnt == max_inserts:
+                upd = upd + cnt
                 cnt = 0
                 try:
                     print 'starting updates...'
