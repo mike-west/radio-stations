@@ -9,6 +9,13 @@ import argparse
 import ast
 from aka_call_sign import get_aka_sign
 
+try:
+    import mongodata
+    print "mongodata found"
+except ImportError:
+    print "Can't find mongodataa"
+    
+
 class Facility(object):
     def __init__(self, data):
         self.fields = data.split('|')
@@ -91,16 +98,20 @@ def get_facilities(facility_file):
 def main(argv=None):
         
     argparser = argparse.ArgumentParser(description="Create station collection from fcc facility data")
+    argparser.add_argument('--mongouri', dest='mongouri', default='mongodb://localhost:27017', required=False, help='mongodb connection string')
     argparser.add_argument('--facility_file', dest='facility_file', default='facility.dat', help="path to facility file (i.e. facility.dat) defaults to facility.dat in current directory")
     argparser.add_argument('--collection', dest='collection', default='stations', help='name of collection to create, default is stations. Drops existing collection if it exists')
     argparser.add_argument('--db_name', dest='dbname', required=True, help='name of mongodb database, required')
     args = argparser.parse_args()
     
     # assumes the database server is listening @ localhost:27017
-    client = MongoClient()
+    print 'mongouri: ', args.mongouri
+    client = MongoClient(args.mongouri)
+    print client
     db = client[args.dbname]
-    db.drop_collection(args.collection)
-    stations = db.create_collection(args.collection)
+#     db.drop_collection(args.collection)
+#     stations = db.create_collection(args.collection)
+    stations = db.stations
     
     stations.insert(get_facilities(args.facility_file))
     stations.create_index("facility-id")
